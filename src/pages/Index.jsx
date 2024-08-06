@@ -17,8 +17,9 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem('periods', JSON.stringify(periods));
     if (periods.length >= 2) {
-      const lastPeriod = new Date(periods[periods.length - 1]);
-      const secondLastPeriod = new Date(periods[periods.length - 2]);
+      const sortedPeriods = [...periods].sort((a, b) => new Date(a) - new Date(b));
+      const lastPeriod = new Date(sortedPeriods[sortedPeriods.length - 1]);
+      const secondLastPeriod = new Date(sortedPeriods[sortedPeriods.length - 2]);
       const cycleDays = Math.round((lastPeriod - secondLastPeriod) / (1000 * 60 * 60 * 24));
       setNextPeriod(addDays(lastPeriod, cycleDays));
     }
@@ -57,7 +58,7 @@ const Index = () => {
             
             <h3 className="text-lg font-semibold mb-2">Previous Periods:</h3>
             <ul className="space-y-2">
-              {periods.map((period, index) => (
+              {[...periods].sort((a, b) => new Date(b) - new Date(a)).map((period, index) => (
                 <li key={index} className="bg-white p-2 rounded shadow">
                   {format(parseISO(period), 'MMMM d, yyyy')}
                 </li>
